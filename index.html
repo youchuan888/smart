@@ -40,11 +40,15 @@
     const timestampContainer = document.getElementById('timestamp');
 
     //Define BLE Device Specs
-    var deviceName ='ESP32';
+    var deviceName ='"ESP32_BLE_Device"';
     var bleService = '73a058dd-9fbe-41e2-b110-abd419c18dd7';
     var ledCharacteristic = '73a058dd-9fbe-41e2-b110-abd419c18dd8';
     var sensorCharacteristic= '73a058dd-9fbe-41e2-b110-abd419c18dd9';
-
+ /*   
+    #define SERVICE_UUID                "73a058dd-9fbe-41e2-b110-abd419c18dd7"
+    #define CHARACTERISTIC_UUID_NOTIFY "73a058dd-9fbe-41e2-b110-abd419c18dd9"
+    #define CHARACTERISTIC_UUID_WRITE  "73a058dd-9fbe-41e2-b110-abd419c18dd8"
+*/
     //Global Variables to Handle Bluetooth
  //   var bleServer;
     var bleServiceFound;
