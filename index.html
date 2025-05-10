@@ -86,7 +86,8 @@ function Test1(){
     function connectToDevice(){
         console.log('Initializing Bluetooth...');
         navigator.bluetooth.requestDevice({
-            filters: [{name: deviceName}],
+ //           filters: [{name: deviceName}],
+            acceptAllDevices: true,
             optionalServices: [bleService]
         })
         .then(device => {
