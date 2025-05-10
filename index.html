@@ -22,8 +22,9 @@
   <p><span id="valueContainer">NaN</span></p>
   <p>Last reading: <span id="timestamp"></span></p>
   <h2>Control GPIO 2</h2>
-  <button style="height:100px;width:100px;"id="onButton">ON</button>
-  <button style="height:100px;width:100px;"id="offButton">OFF</button>
+  <button style="height:50px;width:100px;"id="onButton">ON</button>
+  <button style="height:500px;width:100px;"id="offButton">OFF</button>
+  <button style="height:100px;width:100px;"id="flashButton">Flash</button>
   <p>Last value sent: <span id="valueSent"></span></p>
   <p><a href="https://randomnerdtutorials.com/">Created by RandomNerdTutorials.com</a></p>
   <p><a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/">Read the full project here.</a></p>
@@ -34,6 +35,7 @@
     const disconnectButton = document.getElementById('disconnectBleButton');
     const onButton = document.getElementById('onButton');
     const offButton = document.getElementById('offButton');
+    const flashButton = document.getElementById('flashButton');
     const retrievedValue = document.getElementById('valueContainer');
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
@@ -67,6 +69,7 @@
     // Write to the ESP32 LED Characteristic
     onButton.addEventListener('click',  (event) =>{writeOnCharacteristic("ON")});
     offButton.addEventListener('click',  (event) =>{writeOnCharacteristic("OFF")});
+    flashButton.addEventListener('click',  (event) =>{writeOnCharacteristic("Flash")});    
 
     // Check if BLE is available in your Browser
     function isWebBluetoothEnabled() {
@@ -161,6 +164,7 @@ function Test1(){
                 //return characteristic.writeValue(data)
                 if(value=="ON") data[0]=1;
                 else if(value=="OFF") data[0]=2;
+                else data[0]=3;
 	            characteristic.writeValue(data);
                 console.log("write data=",data[0]);
             })
