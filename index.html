@@ -83,54 +83,53 @@ function Test1(){
 //-----------------------------------------------------------------------
     // Connect to BLE Device and Enable Notifications
 
-    function connectToDevice(){
+    async function connectToDevice() {
+    try {
         console.log('Initializing Bluetooth...');
-        navigator.bluetooth.requestDevice({
- //           filters: [{name: deviceName}],
+        
+        const device = await navigator.bluetooth.requestDevice({
             acceptAllDevices: true,
             optionalServices: [bleService]
-        })
-        .then(device => {
-            console.log('Device Selected:', device.name);
-            bleStateContainer.innerHTML ="Device selected:"+device.name;
-            device.addEventListener('gattservicedisconnected', onDisconnected);
-            return device.gatt.connect();
-            bleStateContainer.innerHTML ="Connected to device ";
-            bleStateContainer.style.color = "#24af37";
-        })
-        .then(gattServer =>{
-            bleServer = gattServer;
-            console.log("Connected to GATT Server");
-            return bleServer.getPrimaryService(bleService);
-            bleStateContainer.innerHTML ="Connected to server ";
-        })
-        .then(service => {
-            bleServiceFound = service;
-            console.log("Service discovered:", service.uuid);
-            return service.getCharacteristic(sensorCharacteristic);
-            bleStateContainer.innerHTML ="Connected to service ";
-        })
-        .then(characteristic => {
-            console.log("Characteristic discovered:", characteristic.uuid);
-            sensorCharacteristicFound = characteristic;
-            characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
-            characteristic.startNotifications();
-            console.log("Notifications Started.");
-            return characteristic.readValue();           
-            bleStateContainer.innerHTML ="Connected to charac ";
+        });
 
-        })
-        .then(value => {
-            console.log("Read value: ", value);
-            const decodedValue = new TextDecoder().decode(value);
-            console.log("Decoded value: ", decodedValue);
-            retrievedValue.innerHTML = decodedValue;
-            bleStateContainer.innerHTML ="Read value ";
-        })
-        .catch(error => {
-            console.log('Error: ', error);
-        })
+        console.log('Device Selected:', device.name);
+        bleStateContainer.innerHTML = "Device selected: " + device.name;
+        device.addEventListener('gattservicedisconnected', onDisconnected);
+
+        const server = await device.gatt.connect();
+        bleStateContainer.innerHTML = "Connected to device";
+        bleStateContainer.style.color = "#24af37";
+        console.log("Connected to GATT Server");
+
+        const service = await server.getPrimaryService(bleService);
+        console.log("Service discovered:", service.uuid);
+        bleStateContainer.innerHTML = "Service connected";
+
+        const characteristic = await service.getCharacteristic(sensorCharacteristic);
+        console.log("Characteristic discovered:", characteristic.uuid);
+        bleStateContainer.innerHTML = "Characteristic connected";
+
+        characteristic.addEventListener('characteristicvaluechanged', handleCharacteristicChange);
+        await characteristic.startNotifications();
+        console.log("Notifications Started.");
+
+        const value = await characteristic.readValue();
+        const decodedValue = new TextDecoder().decode(value);
+        console.log("Read value:", decodedValue);
+        retrievedValue.innerHTML = decodedValue;
+        bleStateContainer.innerHTML = "Value read";
+
+        // 儲存全域狀態
+        bleServer = server;
+        bleServiceFound = service;
+        sensorCharacteristicFound = characteristic;
+
+    } catch (error) {
+        console.error("Error:", error);
+        bleStateContainer.innerHTML = "Error: " + error;
+        bleStateContainer.style.color = "#d62222";
     }
+}
 //----------------------------------------------------------------
     function onDisconnected(event){
         console.log('Device Disconnected:', event.target.device.name);
